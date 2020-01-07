@@ -16,7 +16,7 @@ These are the command line parameters (not case sensitive):
   BFSSELLOUT
   BFSTIER1
 
-Example to run the program for Hankook; Right click on a shortcut to the exe. In the target field, add a space then the command line parameter after the path like so: "C:\Scheduled Tasks\DealerProgramsUploads\Dealer Programs Uploads.exe" hankook
+Example: To run the program for Hankook, right click on a shortcut to the exe. In the target field, add a space then the command line parameter after the path like so: "C:\Scheduled Tasks\DealerProgramsUploads\Dealer Programs Uploads.exe" hankook. Hit OK to save then double click the shortcut to run the program.
 
 The old programs used internal, hard-coded sql queries to fetch the data. The new program uses stored procedures. When a request is made to submit data for a particular date range/dealer etc, we can just change the stored proc, instead of altering and recompiling the program.
 
