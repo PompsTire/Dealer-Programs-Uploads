@@ -24,6 +24,65 @@ namespace Dealer_Programs_Uploads
             ClearError();
         }
 
+        public bool CreateGFKFile()
+        {
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_GFK");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark); //DateTime.Now.Subtract(dtStartMark).Minutes * 60 + DateTime.Now.Subtract(dtStartMark).Seconds; 
+
+            if (objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    StringBuilder sbLine = new StringBuilder();
+                    string tbDelim = "\t";
+
+                    foreach (DataRow dr in m_dtResults.Rows)
+                    {
+                        sbLine.Clear();
+                        sbLine.Append(dr["StoreNumber"].ToString() + tbDelim);
+                        sbLine.Append(dr["InvoiceNumber"].ToString() + tbDelim);
+                        sbLine.Append(dr["Week_Number"].ToString() + tbDelim);
+                        sbLine.Append(dr["InvDate"].ToString() + tbDelim);
+                        sbLine.Append(dr["CustomerClass"].ToString() + tbDelim);
+
+                        sbLine.Append(dr["ProductClass"].ToString() + tbDelim);
+                        sbLine.Append(dr["ProductNumber"].ToString() + tbDelim);
+                        sbLine.Append(dr["ProductDescription"].ToString() + tbDelim);
+                        sbLine.Append(dr["Quantity"].ToString() + tbDelim);
+                        sbLine.Append(dr["Price"].ToString() + tbDelim);
+
+                        sbLine.Append(dr["DeleteCode"].ToString() + tbDelim);
+                        sbLine.Append(dr["MakeOfCar"].ToString() + tbDelim);
+                        sbLine.Append(dr["ModelOfCar"].ToString() + tbDelim);
+                        sbLine.Append(dr["YearOfCar"].ToString() + tbDelim);
+                        sbLine.Append(dr["Mileage"].ToString() + tbDelim);
+
+                        sbLine.Append(dr["VinNumber"].ToString() + tbDelim);
+                        sbLine.Append(dr["Vin2nd8Characters"].ToString());
+                 
+                        sw.WriteLine(sbLine.ToString());
+                        m_rowsCreated++;
+                    }
+                    sw.Close();
+                }
+                catch(Exception ex)
+                { SetError(ex.Message); }
+            }
+
+            return !m_isError;
+        }
+
         public bool CreateBFSTier1File()
         {
             m_rowsCreated = 0;
@@ -31,7 +90,7 @@ namespace Dealer_Programs_Uploads
             DataAccess objDA = new DataAccess();
             DateTime dtStartMark = DateTime.Now;
 
-            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_BFSTier1_DailyUploads");
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BFSTier1");
             m_queryRunTimeSeconds = TotalSeconds(dtStartMark); //DateTime.Now.Subtract(dtStartMark).Minutes * 60 + DateTime.Now.Subtract(dtStartMark).Seconds; 
 
             if (objDA.IsError)
@@ -71,7 +130,7 @@ namespace Dealer_Programs_Uploads
             DataAccess objDA = new DataAccess();
             DateTime dtStartMark = DateTime.Now;
 
-            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_BFSSellout_DailyUploads");
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BFSSellout");
             m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
 
             if (objDA.IsError)
@@ -112,7 +171,7 @@ namespace Dealer_Programs_Uploads
             DataAccess objDA = new DataAccess();
             DateTime dtStartMark = DateTime.Now;
 
-            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_Hankook_DailyUploads");
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_Hankook");
             m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
 
             if (objDA.IsError)
@@ -160,7 +219,7 @@ namespace Dealer_Programs_Uploads
             DataAccess objDA = new DataAccess();
             DateTime dtStartMark = DateTime.Now;
 
-            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_Goodyear_DailyUploads");
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_Goodyear");
             m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
 
             if (objDA.IsError)
@@ -201,7 +260,7 @@ namespace Dealer_Programs_Uploads
             DataAccess objDA = new DataAccess();
             DateTime dtStartMark = DateTime.Now;
             
-            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_Pirelli_DailyUploads");
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_Pirelli");
             m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
 
             if (objDA.IsError)

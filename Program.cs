@@ -95,7 +95,9 @@ namespace Dealer_Programs_Uploads
                         }
                     case "GFK":
                         {
-
+                            validSwitch = true;
+                            objDP.OutputFileName = GFK_FileNameNow();
+                            objDP.CreateGFKFile();
                             break;
                         }
                 }
@@ -164,6 +166,20 @@ namespace Dealer_Programs_Uploads
                 Console.WriteLine("Press Any Key...");
                 Console.ReadKey();
             }
+        }
+
+        private static string GFK_FileNameNow()
+        {
+            StringBuilder newFileName = new StringBuilder("TEST_GFK_");
+            DateTime st = DateTime.Now.Subtract(new TimeSpan(-7, 0, 0, 0, 0));
+            DateTime en = DateTime.Now;
+            newFileName.Append(st.Year.ToString() + "-");
+            newFileName.Append(st.Month.ToString().PadLeft(2, '0') + "-");
+            newFileName.Append(st.Day.ToString().PadLeft(2, '0') + "-");
+            newFileName.Append(en.Year.ToString() + "-");
+            newFileName.Append(en.Month.ToString().PadLeft(2, '0') + "-");
+            newFileName.Append(en.Day.ToString().PadLeft(2, '0') + ".txt");
+            return newFileName.ToString();
         }
 
         private static void saveDataFile(string dealerProgramGroup, string jobLogKey, string fileDateStamp)

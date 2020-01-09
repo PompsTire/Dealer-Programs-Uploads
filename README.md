@@ -15,6 +15,7 @@ These are the command line parameters (not case sensitive):
   HANKOOK
   BFSSELLOUT
   BFSTIER1
+  GFK (Added 1.9.2020)
 
 Example: To run the program for Hankook, right click on a shortcut to the exe. In the target field, add a space then the command line parameter after the path like so: "C:\Scheduled Tasks\DealerProgramsUploads\Dealer Programs Uploads.exe" hankook. Hit OK to save then double click the shortcut to run the program.
 
@@ -26,3 +27,14 @@ Pirelli:  Dealer_Programs.dbo.up_Pirelli_DailyUploads
 Hankook:  Dealer_Programs.dbo.up_Hankook_DailyUploads
 BFSSELLOUT: Dealer_Programs.dbo.up_BFSSellout_DailyUploads
 BFSTIRE1: Dealer_Programs.dbo.up_BFSTier1_DailyUploads
+
+1.9.2020  -------------------------------------------------------------------------------------
+Added new Stored Proc Dealer_Programs.dbo.up_DailyUploads_GFK
+
+Changed stored proc names:
+Goodyear: Dealer_Programs.dbo.up_Goodyear_DailyUploads --> up_DailyUploads_Goodyear
+Pirelli:  Dealer_Programs.dbo.up_Pirelli_DailyUploads  --> up_DailyUploads_Pirelli
+Hankook:  Dealer_Programs.dbo.up_Hankook_DailyUploads  --> up_DailyUploads_Hankook
+BFSSELLOUT: Dealer_Programs.dbo.up_BFSSellout_DailyUploads  --> up_DailyUploads_BFSSellout
+BFSTIRE1: Dealer_Programs.dbo.up_BFSTier1_DailyUploads  --> up_DailyUploads_BFSTier1
+-----------------------------------------------------------------------------------------------
