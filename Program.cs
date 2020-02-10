@@ -26,7 +26,7 @@ namespace Dealer_Programs_Uploads
         static void Main(string[] args)
         {
             bool validSwitch = false;            
-            bool testMode = false; // ********** Flip to false for prod *******************************
+            bool testMode = true; // ********** Flip to false for prod *******************************
             
             foreach (string arg in args)
             {
@@ -170,9 +170,9 @@ namespace Dealer_Programs_Uploads
 
         private static string GFK_FileNameNow()
         {
-            StringBuilder newFileName = new StringBuilder("TEST_GFK_");
-            DateTime st = DateTime.Now.Subtract(new TimeSpan(-7, 0, 0, 0, 0));
-            DateTime en = DateTime.Now;
+            StringBuilder newFileName = new StringBuilder("");
+            DateTime st = DateTime.Now.Subtract(new TimeSpan(7, 0, 0, 0, 0));
+            DateTime en = DateTime.Now.Subtract(new TimeSpan(1, 0, 0, 0, 0));
             newFileName.Append(st.Year.ToString() + "-");
             newFileName.Append(st.Month.ToString().PadLeft(2, '0') + "-");
             newFileName.Append(st.Day.ToString().PadLeft(2, '0') + "-");

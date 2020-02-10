@@ -27,6 +27,7 @@ Pirelli:  Dealer_Programs.dbo.up_Pirelli_DailyUploads
 Hankook:  Dealer_Programs.dbo.up_Hankook_DailyUploads
 BFSSELLOUT: Dealer_Programs.dbo.up_BFSSellout_DailyUploads
 BFSTIRE1: Dealer_Programs.dbo.up_BFSTier1_DailyUploads
+GFK: Dealer_Programs.dbo.up_DailyUploads_GFK
 
 1.9.2020  -------------------------------------------------------------------------------------
 Added new Stored Proc Dealer_Programs.dbo.up_DailyUploads_GFK
@@ -38,3 +39,4 @@ Hankook:  Dealer_Programs.dbo.up_Hankook_DailyUploads  --> up_DailyUploads_Hanko
 BFSSELLOUT: Dealer_Programs.dbo.up_BFSSellout_DailyUploads  --> up_DailyUploads_BFSSellout
 BFSTIRE1: Dealer_Programs.dbo.up_BFSTier1_DailyUploads  --> up_DailyUploads_BFSTier1
 -----------------------------------------------------------------------------------------------
+Settings: FTP information and file paths are stored in database: [Dealer_Programs].[dbo].[tb_DealerPrograms_DealerAppSettings]
