@@ -26,7 +26,8 @@ namespace Dealer_Programs_Uploads
         static void Main(string[] args)
         {
             bool validSwitch = false;            
-            bool testMode = true; // ********** Flip to false for prod *******************************
+            //bool testMode = false; // ********** Flip to false for prod *******************************
+            bool testMode = GET_TESTMODESTATUS;
             
             foreach (string arg in args)
             {
@@ -292,6 +293,9 @@ namespace Dealer_Programs_Uploads
 
         private static string CONNECTIONSTRING_GBSQL01v2
         { get => System.Configuration.ConfigurationManager.AppSettings["GBSQL01_v2"]; }
+
+        private static bool GET_TESTMODESTATUS
+        { get => bool.Parse(System.Configuration.ConfigurationManager.AppSettings["TESTMODE"].ToString()); }
 
         private static void GetDealerAppSettings(string dealerProgramGroup)
         {
