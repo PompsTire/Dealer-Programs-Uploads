@@ -5,6 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 
+/*
+    3.10.2020, added routine in DataAccess.cls to call stored proc that removes new dealer flag from dealer profile table.
+    Not going to use routine here at this time. Added step to the end of the sql job.
+*/
+ 
 namespace Dealer_Programs_Uploads
 {
     class Program

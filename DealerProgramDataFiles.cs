@@ -32,7 +32,7 @@ namespace Dealer_Programs_Uploads
             DateTime dtStartMark = DateTime.Now;
 
             m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_GFK");
-            m_queryRunTimeSeconds = TotalSeconds(dtStartMark); //DateTime.Now.Subtract(dtStartMark).Minutes * 60 + DateTime.Now.Subtract(dtStartMark).Seconds; 
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark); 
 
             if (objDA.IsError)
             {
@@ -91,7 +91,7 @@ namespace Dealer_Programs_Uploads
             DateTime dtStartMark = DateTime.Now;
 
             m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BFSTier1");
-            m_queryRunTimeSeconds = TotalSeconds(dtStartMark); //DateTime.Now.Subtract(dtStartMark).Minutes * 60 + DateTime.Now.Subtract(dtStartMark).Seconds; 
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark); 
 
             if (objDA.IsError)
             {
@@ -310,6 +310,23 @@ namespace Dealer_Programs_Uploads
                 }                              
             }
             return !IsError;
+        }
+
+        public void UpdateNotNewDealerProfiles()
+        {
+            // flips the newdealer flag in dealerprofile table in DB. 
+            // Changing flag to 0 will cause future reporting to use default date of program
+            // instead of dealer start date.
+            try
+            {
+                DataAccess objDA = new DataAccess();
+                String sql = "EXEC Dealer_Programs.dbo.up_DailyUploads_UpdateNotNewDealers ";
+                objDA.ExecNonQuery(m_connectionString, sql);
+                if (objDA.IsError)
+                    throw new ApplicationException(objDA.ErrorMessage);
+            }
+            catch(Exception ex)
+            { SetError(ex.Message); }
         }
  
         private string PathWack(string SomePath)
