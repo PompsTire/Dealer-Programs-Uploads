@@ -106,6 +106,13 @@ namespace Dealer_Programs_Uploads
                             objDP.CreateGFKFile();
                             break;
                         }
+                    case "PODIUM":
+                        {
+                            validSwitch = true;
+                            objDP.OutputFileName = "Podium_CustomerNumbers_ " + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
+                            objDP.CreatePodiumFile();
+                            break;
+                        }
                 }
 
                 if (validSwitch)

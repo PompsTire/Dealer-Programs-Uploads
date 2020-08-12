@@ -164,6 +164,60 @@ namespace Dealer_Programs_Uploads
             return !IsError;
         }
 
+        public bool CreatePodiumFile()
+        {
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_Podium");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
+
+            if(objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    StringBuilder sbLine = new StringBuilder();
+
+                    sw.WriteLine("InvoiceDate,CustomerName,CustomerClass,CellNumber,PrimaryNumber,BusinessNumber,StoreNumber,StoreName,Address1,City,State,Zip");
+
+                    foreach(DataRow dr in m_dtResults.Rows)
+                    {
+                        sbLine.Clear();
+                        sbLine.Append(dr["InvoiceDate"].ToString() + ",");
+                        sbLine.Append(dr["CustomerName"].ToString() + ",");
+                        sbLine.Append(dr["CustomerClass"].ToString() + ",");
+                        sbLine.Append(dr["CellNumber"].ToString() + ",");
+                        sbLine.Append(dr["PrimaryNumber"].ToString() + ",");
+                        sbLine.Append(dr["BusinessNumber"].ToString() + ",");
+                        sbLine.Append(dr["StoreNumber"].ToString() + ",");
+                        sbLine.Append(dr["StoreName"].ToString() + ",");
+                        sbLine.Append(dr["Address1"].ToString() + ",");
+                        sbLine.Append(dr["City"].ToString() + ",");
+                        sbLine.Append(dr["State"].ToString() + ",");
+                        sbLine.Append(dr["Zip"].ToString());
+                        sw.WriteLine(sbLine.ToString());
+                        m_rowsCreated++;
+                    }
+                    sw.Close();
+                }
+                catch(Exception ex)
+                {
+                    SetError(ex.Message);
+                }
+
+            }
+
+            return !IsError;
+        }
+
         public bool CreateHankookFile()
         {
             m_rowsCreated = 0;
