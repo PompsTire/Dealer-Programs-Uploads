@@ -113,6 +113,14 @@ namespace Dealer_Programs_Uploads
                             objDP.CreatePodiumFile();
                             break;
                         }
+                    case "METAVIEWER":
+                        {
+                            validSwitch = true;
+                            objDP.ConnectionString = CONNECTIONSTRING_Metaviewer;
+                            objDP.OutputFileName = "MetaviewerExport_" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
+                            objDP.CreateMetaMaddenFile();
+                            break;
+                        }
                 }
 
                 if (validSwitch)
@@ -305,6 +313,9 @@ namespace Dealer_Programs_Uploads
 
         private static string CONNECTIONSTRING_GBSQL01v2
         { get => System.Configuration.ConfigurationManager.AppSettings["GBSQL01_v2"]; }
+
+        private static string CONNECTIONSTRING_Metaviewer
+        { get => System.Configuration.ConfigurationManager.AppSettings["Metaviewer"]; }
 
         private static bool GET_TESTMODESTATUS
         { get => bool.Parse(System.Configuration.ConfigurationManager.AppSettings["TESTMODE"].ToString()); }

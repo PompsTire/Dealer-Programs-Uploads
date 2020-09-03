@@ -123,6 +123,7 @@ namespace Dealer_Programs_Uploads
                 return !IsError;
             }
         }
+
         public bool CreateBFSSelloutFile()
         {
             m_rowsCreated = 0;
@@ -164,60 +165,7 @@ namespace Dealer_Programs_Uploads
             return !IsError;
         }
 
-        public bool CreatePodiumFile()
-        {
-            m_rowsCreated = 0;
-            m_dtResults = new DataTable();
-            DataAccess objDA = new DataAccess();
-            DateTime dtStartMark = DateTime.Now;
-
-            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_Podium");
-            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
-
-            if(objDA.IsError)
-            {
-                SetError(objDA.ErrorMessage);
-                return false;
-            }
-            else
-            {
-                try
-                {
-                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
-                    StringBuilder sbLine = new StringBuilder();
-
-                    sw.WriteLine("InvoiceDate,CustomerName,CustomerClass,CellNumber,PrimaryNumber,BusinessNumber,StoreNumber,StoreName,Address1,City,State,Zip");
-
-                    foreach(DataRow dr in m_dtResults.Rows)
-                    {
-                        sbLine.Clear();
-                        sbLine.Append(dr["InvoiceDate"].ToString() + ",");
-                        sbLine.Append(dr["CustomerName"].ToString() + ",");
-                        sbLine.Append(dr["CustomerClass"].ToString() + ",");
-                        sbLine.Append(dr["CellNumber"].ToString() + ",");
-                        sbLine.Append(dr["PrimaryNumber"].ToString() + ",");
-                        sbLine.Append(dr["BusinessNumber"].ToString() + ",");
-                        sbLine.Append(dr["StoreNumber"].ToString() + ",");
-                        sbLine.Append(dr["StoreName"].ToString() + ",");
-                        sbLine.Append(dr["Address1"].ToString() + ",");
-                        sbLine.Append(dr["City"].ToString() + ",");
-                        sbLine.Append(dr["State"].ToString() + ",");
-                        sbLine.Append(dr["Zip"].ToString());
-                        sw.WriteLine(sbLine.ToString());
-                        m_rowsCreated++;
-                    }
-                    sw.Close();
-                }
-                catch(Exception ex)
-                {
-                    SetError(ex.Message);
-                }
-
-            }
-
-            return !IsError;
-        }
-
+    
         public bool CreateHankookFile()
         {
             m_rowsCreated = 0;
@@ -364,6 +312,136 @@ namespace Dealer_Programs_Uploads
                 }                              
             }
             return !IsError;
+        }
+
+        public bool CreatePodiumFile()
+        {
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_Podium");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
+
+            if(objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    StringBuilder sbLine = new StringBuilder();
+
+                    sw.WriteLine("InvoiceDate,CustomerName,CustomerClass,CellNumber,PrimaryNumber,BusinessNumber,StoreNumber,StoreName,Address1,City,State,Zip");
+
+                    foreach(DataRow dr in m_dtResults.Rows)
+                    {
+                        sbLine.Clear();
+                        sbLine.Append(dr["InvoiceDate"].ToString() + ",");
+                        sbLine.Append(dr["CustomerName"].ToString() + ",");
+                        sbLine.Append(dr["CustomerClass"].ToString() + ",");
+                        sbLine.Append(dr["CellNumber"].ToString() + ",");
+                        sbLine.Append(dr["PrimaryNumber"].ToString() + ",");
+                        sbLine.Append(dr["BusinessNumber"].ToString() + ",");
+                        sbLine.Append(dr["StoreNumber"].ToString() + ",");
+                        sbLine.Append(dr["StoreName"].ToString() + ",");
+                        sbLine.Append(dr["Address1"].ToString() + ",");
+                        sbLine.Append(dr["City"].ToString() + ",");
+                        sbLine.Append(dr["State"].ToString() + ",");
+                        sbLine.Append(dr["Zip"].ToString());
+                        sw.WriteLine(sbLine.ToString());
+                        m_rowsCreated++;
+                    }
+                    sw.Close();
+                }
+                catch(Exception ex)
+                {
+                    SetError(ex.Message);
+                }
+
+            }
+
+            return !IsError;
+        }
+
+        public bool CreateMetaMaddenFile()
+        {
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC MetaViewerIntegration.dbo.POMPS_GetExport");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
+
+            if (objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    StringBuilder sbLine = new StringBuilder();
+
+                    foreach (DataRow dr in m_dtResults.Rows)
+                    {
+                        sbLine.Clear();
+                        sbLine.Append(SetMetaLen(15, dr["VendorNumber"].ToString()));
+                        sbLine.Append(SetMetaLen(15,dr["InvoiceNumber"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["PaymentNumber"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["SequenceNumber"].ToString()));
+                        sbLine.Append(SetMetaLen(20,dr["InvoiceDescription"].ToString()));
+                        sbLine.Append(SetMetaLen(15,dr["ExtendedPrice"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["TotalDiscount"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["InvoiceDate"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["DueDate"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["CheckDate"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["CheckNumber"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["HoldFlag"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["DiscountTakenCode"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["SelectCode"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["BankCode"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["Division"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["YearPosted"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["PeriodPosted"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["GLReference"].ToString()));
+                        sbLine.Append(SetMetaLen(20,dr["LineDescription"].ToString()));
+                        sbLine.Append(SetMetaLen(15,dr["Amount"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["Quantity"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["GL_AccountNumber"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["GL_Division"].ToString()));
+                        sbLine.Append(SetMetaLen(10,dr["Department"].ToString()));
+                        sw.WriteLine(sbLine.ToString());
+                        m_rowsCreated++;
+                    }
+                    sw.Close();
+                }
+                catch (Exception ex)
+                {
+                    SetError(ex.Message);
+                }
+            }
+            return !m_isError;
+        }
+
+        public string SetMetaLen(int Len, String sValue)
+        {
+            char sPadChar = ' ';
+            if (sValue is null)
+                sValue = "";
+            else if (sValue.Length > Len)
+                sValue = sValue.Substring(0, Len);
+            else
+                sValue = sValue.PadRight(Len, sPadChar);
+
+            return sValue;
         }
 
         public void UpdateNotNewDealerProfiles()
