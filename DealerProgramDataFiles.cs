@@ -344,9 +344,9 @@ namespace Dealer_Programs_Uploads
                         sbLine.Append(dr["InvoiceDate"].ToString() + ",");
                         sbLine.Append(dr["CustomerName"].ToString() + ",");
                         sbLine.Append(dr["CustomerClass"].ToString() + ",");
-                        sbLine.Append(dr["CellNumber"].ToString() + ",");
-                        sbLine.Append(dr["PrimaryNumber"].ToString() + ",");
-                        sbLine.Append(dr["BusinessNumber"].ToString() + ",");
+                        sbLine.Append(dr["CELLPHONE"].ToString() + ",");
+                        sbLine.Append(dr["HOMEPHONE"].ToString() + ",");
+                        sbLine.Append(dr["WORKPHONE"].ToString() + ",");
                         sbLine.Append(dr["StoreNumber"].ToString() + ",");
                         sbLine.Append(dr["StoreName"].ToString() + ",");
                         sbLine.Append(dr["Address1"].ToString() + ",");
@@ -365,6 +365,83 @@ namespace Dealer_Programs_Uploads
 
             }
 
+            return !IsError;
+        }
+
+        public bool CreateMavisFile()
+        {
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_Mavis");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
+
+            if(objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    StringBuilder sbLine = new StringBuilder();
+                    sbLine.Append("TransactionType,Billing Number,Billing Name,ShipToNumber,ShipToName,StoreNumber,DistributionCenter,");
+                    sbLine.Append("OrderNumber,OrderDate,InvoiceNumber,InvoiceDate,PONumber,Brand,ItemNumber,ItemDescription,OrderQuantity,");
+                    sbLine.Append("QuantityShipped,InvoiceQuantity,UnitPrice,ExtendedPrice,Discount,TotalInvoiceCost,FetPerUnit,TaxAmount,");
+                    sbLine.Append("DeliveryNote,ContainerNumber,ShipDate,SealNumber,PortOfDischarge,ETADoschargePort,ShippingLine,BillOfLading");
+                    sbLine.Append("ServiceRendered,SignatureName,SignatureTime");
+                    sw.WriteLine(sbLine.ToString());
+                    
+                    foreach(DataRow dr in m_dtResults.Rows)
+                    {
+                        sbLine.Clear();
+                        sbLine.Append(dr["TRANSACTIONTYPE"].ToString());
+                        sbLine.Append(dr["BILLTONUMBER"].ToString());
+                        sbLine.Append(dr["BILLTONAME"].ToString());
+                        sbLine.Append(dr["SHIPTONUMBER"].ToString());
+                        sbLine.Append(dr["SHIPTONAME"].ToString());
+                        sbLine.Append(dr["STORENUMBER"].ToString());
+                        sbLine.Append(dr["DISTRIBUTIONCENTER"].ToString());
+                        sbLine.Append(dr["ORDERNUMBER"].ToString());
+                        sbLine.Append(dr["ORDERDATE"].ToString());
+                        sbLine.Append(dr["INVOICENUMBER"].ToString());
+                        sbLine.Append(dr["INVOICEDATE"].ToString());
+                        sbLine.Append(dr["PONUMBER"].ToString());
+                        sbLine.Append(dr["PRODUCTBRAND"].ToString());
+                        sbLine.Append(dr["ITEMNUMBER"].ToString());
+                        sbLine.Append(dr["ITEMDESCRIPTION"].ToString());
+                        sbLine.Append(dr["QUANTITYORDERED"].ToString());
+                        sbLine.Append(dr["QUANTITYSHIPPED"].ToString());
+                        sbLine.Append(dr["QUANTITYBILLED"].ToString());
+                        sbLine.Append(dr["UNITPRICE"].ToString());
+                        sbLine.Append(dr["EXTENDEDPRICE"].ToString());
+                        sbLine.Append(dr["ITEMDISCOUNT"].ToString());
+                        sbLine.Append(dr["TOTALINVOICECOST"].ToString());
+                        sbLine.Append(dr["FETPERUNIT"].ToString());
+                        sbLine.Append(dr["TAXAMOUNT"].ToString());
+                        sbLine.Append(dr["DELIVERYNOTE"].ToString());
+                        sbLine.Append(dr["CONTAINERNUMBER"].ToString());
+                        sbLine.Append(dr["SHIPDATE"].ToString());
+                        sbLine.Append(dr["SEALNUMBER"].ToString());
+                        sbLine.Append(dr["PORTOFDISCHARGE"].ToString());
+                        sbLine.Append(dr["ETADISCHARGEPORT"].ToString());
+                        sbLine.Append(dr["SHIPPINGLINE"].ToString());
+                        sbLine.Append(dr["BOL"].ToString());
+                        sbLine.Append(dr["DELIVERYDATE"].ToString());
+                        sw.WriteLine(sbLine.ToString());
+                        m_rowsCreated++;
+                    }
+                    sw.Close();
+                }
+                catch(Exception ex)
+                {
+                    SetError(ex.Message);
+                }
+            }
             return !IsError;
         }
 

@@ -113,12 +113,21 @@ namespace Dealer_Programs_Uploads
                             objDP.CreatePodiumFile();
                             break;
                         }
-                    case "METAVIEWER":
+                    case "MADDENCO":
                         {
                             validSwitch = true;
                             objDP.ConnectionString = CONNECTIONSTRING_Metaviewer;
-                            objDP.OutputFileName = "MetaviewerExport_" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
+                            objDP.OutputFileName = "Meta_" + DateTime.Now.ToString("yyMMddhhmm") + ".txt";
                             objDP.CreateMetaMaddenFile();
+                            break;
+                        }
+                    case "MAVIS":
+                        {
+                            validSwitch = true;
+                            //objDP.OutputFilePath = @"\\gbsql01v2\c$\Scheduled Tasks\DealerProgramsUploads\Mavis\";
+
+                            objDP.OutputFileName = "MAVIS_" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
+                            objDP.CreateMavisFile();
                             break;
                         }
                 }
@@ -163,8 +172,8 @@ namespace Dealer_Programs_Uploads
                     Console.WriteLine("Writing to Job Activity Log...");
                     string updateKey = UpdateJobLog();
 
-                    Console.WriteLine("Writing File Contents to Database...");
-                    saveDataFile(arg.ToUpper(), updateKey, DateTime.Now.ToString());
+                    //Console.WriteLine("Writing File Contents to Database...");
+                    //saveDataFile(arg.ToUpper(), updateKey, DateTime.Now.ToString());
 
                     Console.WriteLine("Query Run Time: " + queryRuntime.ToString() + " Seconds");
                     Console.WriteLine("Total Job Run Time: " + jobRuntime.ToString() + " Seconds");
