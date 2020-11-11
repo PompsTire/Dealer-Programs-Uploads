@@ -115,10 +115,10 @@ namespace Dealer_Programs_Uploads
                         }
                     case "MADDENCO":
                         {
-                            validSwitch = true;
-                            objDP.ConnectionString = CONNECTIONSTRING_Metaviewer;
-                            objDP.OutputFileName = "Meta_" + DateTime.Now.ToString("yyMMddhhmm") + ".txt";
-                            objDP.CreateMetaMaddenFile();
+                            //validSwitch = true;
+                            //objDP.ConnectionString = CONNECTIONSTRING_Metaviewer;
+                            //objDP.OutputFileName = "Meta_" + DateTime.Now.ToString("yyMMddhhmm") + ".txt";
+                            //objDP.CreateMetaMaddenFile();
                             break;
                         }
                     case "MAVIS":
