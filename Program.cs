@@ -124,7 +124,7 @@ namespace Dealer_Programs_Uploads
                     case "MAVIS":
                         {
                             validSwitch = true;
-                            //objDP.OutputFilePath = @"\\gbsql01v2\c$\Scheduled Tasks\DealerProgramsUploads\Mavis\";
+                            objDP.OutputFilePath = @"\\gbsql01v2\c$\Scheduled Tasks\DealerProgramsUploads\Mavis\";
 
                             objDP.OutputFileName = "MAVIS_" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
                             objDP.CreateMavisFile();
