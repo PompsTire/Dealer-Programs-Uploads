@@ -165,7 +165,57 @@ namespace Dealer_Programs_Uploads
             return !IsError;
         }
 
-    
+        public bool CreateBFPASSLTInventoryReport()
+        {
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BFPassLTInventoryRPT");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
+
+            if (objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    StringBuilder sbLine = new StringBuilder();
+
+                    sbLine.Append("ReportDate,MfgProdNumber,MCProdNumber,ShipTo,StoreNo,OnHand,OnOrder");
+                    sw.WriteLine(sbLine.ToString());
+
+                    string sDate = System.DateTime.Now.ToString();
+
+                    foreach(DataRow dr in m_dtResults.Rows)
+                    {
+                        sbLine.Clear();
+                        sbLine.Append(sDate + ",");
+                        sbLine.Append(dr["MfgProdNumber"].ToString() + ",");
+                        sbLine.Append(dr["ProdNumber"].ToString() + ",");
+                        sbLine.Append(dr["ShipTo"].ToString() + ",");
+                        sbLine.Append(dr["StoreNo"].ToString() + ",");
+                        sbLine.Append(dr["OnHand"].ToString() + ",");
+                        sbLine.Append(dr["OnOrder"].ToString());
+                        sw.WriteLine(sbLine.ToString());
+                        m_rowsCreated++;
+                    }
+                    sw.Close();
+                }
+                catch(Exception ex)
+                { SetError(ex.Message); }
+            }
+
+
+            return !IsError;
+        }
+
+
         public bool CreateHankookFile()
         {
             m_rowsCreated = 0;

@@ -90,6 +90,7 @@
     <Compile Include="DataAccess.cs" />
     <Compile Include="DealerProgramDataFiles.cs" />
     <Compile Include="DealerProgramDownloadFiles.cs" />
+    <Compile Include="EMAIL_POMPS.cs" />
     <Compile Include="FTP_POMPS.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

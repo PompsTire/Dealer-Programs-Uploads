@@ -99,6 +99,13 @@ namespace Dealer_Programs_Uploads
                             objDP.CreateBFSTier1File();
                             break;
                         }
+                    case "BFPASSLTREPORT":
+                        {
+                            validSwitch = true;
+                            objDP.OutputFileName = "CurrentPassLTInventoryByStore_Pomps" + ".csv";
+                            objDP.CreateBFPASSLTInventoryReport();
+                            break;
+                        }
                     case "GFK":
                         {
                             validSwitch = true;
@@ -151,16 +158,27 @@ namespace Dealer_Programs_Uploads
                     Console.WriteLine("Query/File Completed at " + DateTime.Now);                    
                     Console.WriteLine(recordsCreated.ToString() + " Records Created.");
 
+                    string sendMethod = "";
+
+                    if (colDealerSettings["EMAILADDRESS"].Length > 0)
+                        sendMethod = "EMAIL";
+                    else
+                        sendMethod = "FTP";
+                            
                     if (recordsCreated == 0)
-                        Console.WriteLine("Skipping FTP");
+                        Console.WriteLine("Skipping " + sendMethod);
                     else
                     {
                         if (objDP.IsError)
-                            Console.WriteLine("Skipping FTP");
+                            Console.WriteLine("Skipping " + sendMethod);
                         else
                         {
-                            Console.WriteLine("Executing FTP...");
-                            FTP_FileUpload();
+                            Console.WriteLine("Executing " + sendMethod + "...");
+
+                            if (sendMethod == "FTP")
+                                FTP_FileUpload();
+                            else
+                                EMAIL_SendFile();
                         }
                     }
 
@@ -272,6 +290,22 @@ namespace Dealer_Programs_Uploads
                     Console.WriteLine("Downloaded File: " + sFl);
             }
             return sFilesToDownload;
+        }
+
+        private static void EMAIL_SendFile()
+        {
+            /*
+             * Hard code the email properties for the only recipient who
+             * is using email temporarily
+             */
+            EMAIL_POMPS objEmail = new EMAIL_POMPS();
+            objEmail.EMailAddress = colDealerSettings["EMAILADDRESS"].ToString();
+            objEmail.EMailFrom = "DoNotReply@pompstire.com";
+            objEmail.EMailSubjectLine = "Current Pass LT Inventory By Store";
+            objEmail.EMailMessageBody = "CSV file attached";
+            objEmail.EMail_Attachment = objDP.OutputFilePath + @"\" + objDP.OutputFileName;
+            objEmail.EMail_SendAsHTML = true;
+            objEmail.SendEmail();
         }
 
         private static void FTP_FileUpload()
