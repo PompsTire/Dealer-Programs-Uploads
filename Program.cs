@@ -102,7 +102,7 @@ namespace Dealer_Programs_Uploads
                     case "BFPASSLTREPORT":
                         {
                             validSwitch = true;
-                            objDP.OutputFileName = "CurrentPassLTInventoryByStore_Pomps" + ".csv";
+                            objDP.OutputFileName = "Pomps_Inventory_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv"; // 
                             objDP.CreateBFPASSLTInventoryReport();
                             break;
                         }

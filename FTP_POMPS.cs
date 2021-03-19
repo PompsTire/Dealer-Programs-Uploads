@@ -137,8 +137,11 @@ namespace Dealer_Programs_Uploads
         }
         public bool UploadFile_FTP()
         {
-            // returns true if successful, false on error
-
+            //  For NON-sftp sites
+            //  returns true if successful, false on error
+            //  NOTE: The FTP subfolder path is CASE SENSITIVE. If the file is not dropping into the target
+            //   folder, check the folder name string.
+            //
             if(FTPENABLED == false)
             {
                 m_statusResponse = "FTP_ENABLED Flag Is Set To False";
@@ -152,14 +155,16 @@ namespace Dealer_Programs_Uploads
             try
             {
                 Uri ur;
-                if (m_remoteFilePath.Length > 0)
-                    ur = new Uri(m_remoteServer + "/" + m_remoteFilePath);
-                else
-                    ur = new Uri(m_remoteServer);
+                ur = new Uri(m_remoteServer);
 
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ur + "/" + m_sourceFileName);
+                // If a subfolder is not used, then add the forward slash between the URI and file name
+                if (m_remoteFilePath.Length == 0)
+                    m_remoteFilePath = "/";
+
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ur + m_remoteFilePath + m_sourceFileName);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
                 request.Credentials = new NetworkCredential(m_remoteUserID, m_remotePassword);
+                request.Proxy = null;
 
                 byte[] fileContents;
                 using (StreamReader sourceStream = new StreamReader(PathWack(m_sourceFilePath) + m_sourceFileName))
