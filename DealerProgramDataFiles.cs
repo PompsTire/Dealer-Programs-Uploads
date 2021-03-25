@@ -195,7 +195,7 @@ namespace Dealer_Programs_Uploads
                     foreach(DataRow dr in m_dtResults.Rows)
                     {
                         sbLine.Clear();
-                        sbLine.Append(DateTime.Parse(dr["DateNow"].ToString()).ToString("yyyyMMdd") + ", ");
+                        sbLine.Append(DateTime.Parse(dr["DateNow"].ToString()).ToString("MM/dd/yyyy") + ", ");
                         sbLine.Append(dr["MfgProdNumber"].ToString() + ",");
                         sbLine.Append(dr["ProdNumber"].ToString() + ",");
                         sbLine.Append(dr["ShipTo"].ToString() + ",");
