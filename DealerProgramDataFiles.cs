@@ -83,6 +83,49 @@ namespace Dealer_Programs_Uploads
             return !m_isError;
         }
 
+        public bool CreateBridgestoneSellout()
+        {
+            // Adding 4.28.2022
+
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BridgestoneSellOut");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
+
+            if (objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+                return false;
+            }
+            else
+            {
+                try
+                {
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    StringBuilder sbLine = new StringBuilder();
+
+                    foreach(DataRow dr in m_dtResults.Rows)
+                    {
+                        sbLine.Clear();
+                        sbLine.Append(dr["InvoiceDate"].ToString() + ",");
+                        sbLine.Append(dr["ItemNumber"].ToString() + ",");
+                        sbLine.Append(dr["Quantity"].ToString() + ",");
+                        sbLine.Append(dr["InvoiceNumber"].ToString() + ",");
+                        sbLine.Append(dr["BFS_CustomerNumber"].ToString());
+                        sw.WriteLine(sbLine.ToString());
+                        m_rowsCreated++;
+                    }
+                    sw.Close();
+                }
+                catch(Exception ex)
+                { SetError(ex.Message); }
+            }
+            return !m_isError;
+        }
+
         public bool CreateBFSTier1File()
         {
             m_rowsCreated = 0;
@@ -131,7 +174,9 @@ namespace Dealer_Programs_Uploads
             DataAccess objDA = new DataAccess();
             DateTime dtStartMark = DateTime.Now;
 
-            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BFSSellout");
+            // m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BFSSellout");
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_BridgestoneSellOut");
             m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
 
             if (objDA.IsError)
@@ -144,6 +189,8 @@ namespace Dealer_Programs_Uploads
                 try
                 {
                     StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    //StreamWriter sw = File.CreateText(@"C:\Temp\" + m_outputFileName);
+
                     StringBuilder sbLine = new StringBuilder();
                     
                     foreach(DataRow dr in m_dtResults.Rows)
@@ -151,9 +198,11 @@ namespace Dealer_Programs_Uploads
                         sbLine.Clear();
                         sbLine.Append(Convert.ToDateTime(dr["Invoice_Date"].ToString()).ToShortDateString() + ",");
                         sbLine.Append(dr["Manufacturer_Product_Number"].ToString() + ",");
-                        sbLine.Append(dr["QUantity"].ToString() + ",");
+                        sbLine.Append(dr["Quantity"].ToString() + ",");
                         sbLine.Append(dr["Invoice_Number"].ToString() + ",");
-                        sbLine.Append(dr["BSF_Location"].ToString());
+                        sbLine.Append(dr["BFS_Location"].ToString() + ",");
+                        sbLine.Append(dr["WholesaleRetail"].ToString() + ","); // Wholesale/Retail - Not required
+                        sbLine.Append(dr["BFS_CustomerNumber"].ToString());
                         sw.WriteLine(sbLine.ToString());
                         m_rowsCreated++;
                     }
@@ -195,7 +244,7 @@ namespace Dealer_Programs_Uploads
                     foreach(DataRow dr in m_dtResults.Rows)
                     {
                         sbLine.Clear();
-                        sbLine.Append(DateTime.Parse(dr["DateNow"].ToString()).ToString("MM/dd/yyyy") + ", ");
+                        sbLine.Append(DateTime.Parse(dr["DateNow"].ToString()).ToString("MM/dd/yyyy") + ",");
                         sbLine.Append(dr["MfgProdNumber"].ToString() + ",");
                         sbLine.Append(dr["ProdNumber"].ToString() + ",");
                         sbLine.Append(dr["ShipTo"].ToString() + ",");
@@ -262,6 +311,93 @@ namespace Dealer_Programs_Uploads
                 }
             }
             return !IsError;
+        }
+
+        public bool CreateGoodyearPOSfile()
+        {
+            m_rowsCreated = 0;
+            m_dtResults = new DataTable();
+            DataAccess objDA = new DataAccess();
+            DateTime dtStartMark = DateTime.Now;
+
+            m_dtResults = objDA.GetDataTable(m_connectionString, "EXEC Dealer_Programs.dbo.up_DailyUploads_GoodyearPOS");
+            m_queryRunTimeSeconds = TotalSeconds(dtStartMark);
+
+            if (objDA.IsError)
+            {
+                SetError(objDA.ErrorMessage);
+            }
+            else
+            {
+                try
+                {
+                    // Create a space delimited file with a header, invoice details and trailer row
+                    string NONSIG = "0000116781";
+                    string INVDATE = DateTime.Now.ToString("yyyyMMdd");
+                    string FileNumber = GYPOS_FileNumber().PadLeft(9, '0');
+
+                    
+                    StreamWriter sw = File.CreateText(PathWack(m_outputFilePath) + m_outputFileName);
+                    // Header
+                    StringBuilder sb  = new StringBuilder("1" + NONSIG + "".PadLeft(25, ' ') + INVDATE + "".PadLeft(9, ' ') + " " + FileNumber + "".PadLeft(147, ' '));
+                    sw.WriteLine(sb.ToString());
+
+                    decimal runningQty = 0;
+                    decimal actQty = 0;
+
+                    // invoice detail lines
+                    foreach(DataRow dr in m_dtResults.Rows)
+                    {
+                        sb.Clear();
+                        sb.Append("3" + dr["NON_SIG"].ToString().PadLeft(10,'0'));
+                        sb.Append(dr["InvoiceNumber"].ToString().PadRight(25, ' '));
+                        sb.Append(dr["InvoiceDate"].ToString());
+                        sb.Append(dr["ProductCode"].ToString());
+                        sb.Append(dr["POSNEG"].ToString());
+                        sb.Append(dr["Quantity"].ToString().PadLeft(9, '0'));
+                        sb.Append(dr["PriceEach"].ToString().PadLeft(12, '0'));
+                        sb.Append(dr["CustomerZip"].ToString().PadLeft(10, ' '));
+                        sb.Append(dr["CarYear"].ToString().PadLeft(4, '0'));
+                        sb.Append(dr["CarMake"].ToString().PadRight(50, ' '));
+                        sb.Append(dr["CarModel"].ToString().PadRight(50, ' '));
+                        sb.Append("".PadRight(21, ' '));
+                        sw.WriteLine(sb.ToString());
+                                            
+                        decimal.TryParse(dr["ActualQuantity"].ToString(),out actQty);
+                        runningQty += actQty;
+                        m_rowsCreated++;
+                    }
+
+                    // trailer row
+                    sb.Clear();
+                    sb.Append("9" + NONSIG + "".PadRight(25, ' ') + "".PadRight(8, ' ') + "".PadRight(9,' '));
+                    if (runningQty >= 0)
+                        sb.Append("+");
+                    else
+                        sb.Append("-");
+                    sb.Append(Math.Abs(runningQty).ToString().PadLeft(9, '0'));
+                    sb.Append(m_rowsCreated.ToString().PadLeft(12, '0'));
+                    sb.Append("".PadRight(135, ' '));
+                    sw.WriteLine(sb.ToString());
+
+                    sw.Close();
+                }
+                catch(Exception ex)
+                { SetError(ex.Message); }
+            }
+
+            return !IsError;
+        }
+
+        public string GYPOS_FileNumber()
+        {
+            // Ensure a unique file number everytime this is called
+            int YYYY = DateTime.Now.Year;
+            int MM = DateTime.Now.Month;
+            int DD = DateTime.Now.Day;
+            int SEC = DateTime.Now.Second;
+            int Rslt = YYYY + MM + DD + SEC;
+            return Rslt.ToString();
         }
 
         public bool CreateGoodyearFile()

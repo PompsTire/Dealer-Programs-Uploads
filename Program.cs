@@ -44,45 +44,28 @@ namespace Dealer_Programs_Uploads
                 GetDealerAppSettings(dealerProgramGroup);
                 objDP.ConnectionString = CONNECTIONSTRING_GBSQL01v2;
                 validSwitch = false;
-                                
-                if(testMode)  // *********************************************************************
-                    objDP.OutputFilePath = @"C:\temp\" + arg + @"\";                    
+
+                if (arg == "?")
+                {                    
+                    frmAbout objFrm = new frmAbout();
+                    objFrm.ConnString = CONNECTIONSTRING_GBSQL01v2;
+                    objFrm.ShowDialog();                    
+                }
                 else
-                    objDP.OutputFilePath = colDealerSettings["LOCALPATH_OUTBOUND"];
+                {
+                    if (testMode)  // *********************************************************************
+                        objDP.OutputFilePath = @"C:\temp\" + arg + @"\";
+                    else
+                        objDP.OutputFilePath = colDealerSettings["LOCALPATH_OUTBOUND"];
+                }
                                                 
                 switch (arg.ToUpper())
                 {
-                    case "GOODYEAR":
+                    case "BFPASSLTREPORT":
                         {
-                            validSwitch = true;                            
-                            objDP.OutputFileName = "Goodyear_Inventory_" + DateTime.Now.ToString("yyyyMMddhhmm") + ".txt";                                                 
-                            objDP.CreateGoodyearFile();
-                            break;
-                        }
-                    case "PIRELLI":
-                        {
-                            validSwitch = true;                            
-                            objDP.OutputFileName = "SO_7091762_" + DateTime.Now.ToString("yyyyMMdd") + ".csv";   // added hhmm
-                            objDP.CreatePirelliFile();                           
-                            break;
-                        }
-                    case "PIRELLI_DOWNLOAD":
-                        {                            
-                            string m_fileNamePart = "Error_SO_7091762_" + DateTime.Now.ToString("yyyyMMdd");
-                            List<string> sDloadedFiles = FTP_FileDownload(m_fileNamePart, false);
-                            break;
-                        }
-                    case "HANKOOK":
-                        {
-                            validSwitch = true;                            
-                            objDP.OutputFileName = "205545-" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";  
-                            objDP.CreateHankookFile();
-                            break;
-                        }
-                    case "HANKOOK_DOWNLOAD":
-                        {
-                            string m_fileNamePart = "Error_205545-2019";
-                            List<string> sDloadedFiles = FTP_FileDownload(m_fileNamePart, false);
+                            validSwitch = true;
+                            objDP.OutputFileName = "Pomps_Inventory_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv"; // 
+                            objDP.CreateBFPASSLTInventoryReport();
                             break;
                         }
                     case "BFSSELLOUT":
@@ -99,11 +82,12 @@ namespace Dealer_Programs_Uploads
                             objDP.CreateBFSTier1File();
                             break;
                         }
-                    case "BFPASSLTREPORT":
+                    case "BRIDGESTONESELLOUT":
                         {
-                            validSwitch = true;
-                            objDP.OutputFileName = "Pomps_Inventory_" + DateTime.Now.ToString("yyyyMMddhhmmss") + ".csv"; // 
-                            objDP.CreateBFPASSLTInventoryReport();
+                            // 5.3.2022, In development
+                            validSwitch = false;
+                            objDP.OutputFileName = "TEST_123456_" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".txt";
+                            objDP.CreateBridgestoneSellout();
                             break;
                         }
                     case "GFK":
@@ -113,30 +97,64 @@ namespace Dealer_Programs_Uploads
                             objDP.CreateGFKFile();
                             break;
                         }
+                    case "GOODYEAR":
+                        {
+                            validSwitch = true;                            
+                            objDP.OutputFileName = "Goodyear_Inventory_" + DateTime.Now.ToString("yyyyMMddhhmm") + ".txt";                                                 
+                            objDP.CreateGoodyearFile();
+                            break;
+                        }
+                    case "GOODYEARPOS":
+                        {
+                            validSwitch = true;
+                            objDP.OutputFileName = "GY_0000116781_NONWDPOSI_" + DateTime.Now.ToString("yyyyMMddhhmm") + ".txt";
+                            objDP.CreateGoodyearPOSfile();
+                            break;
+                        }
+                    case "HANKOOK":
+                        {
+                            validSwitch = true;                            
+                            objDP.OutputFileName = "205545-" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";  
+                            objDP.CreateHankookFile();
+                            break;
+                        }
+                    case "HANKOOK_DOWNLOAD":
+                        {
+                            string m_fileNamePart = "Error_205545-2019";
+                            List<string> sDloadedFiles = FTP_FileDownload(m_fileNamePart, false);
+                            break;
+                        }
+                    case "MAVIS":
+                        {
+                            // **********  Requested, developed and ready for production. 
+                            //validSwitch = true;
+                            //objDP.OutputFilePath = @"\\gbsql01v2\c$\Scheduled Tasks\DealerProgramsUploads\Mavis\";
+
+                            //objDP.OutputFileName = "MAVIS_" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
+                            //objDP.CreateMavisFile();
+                            break;
+                        }
+                    case "PIRELLI":
+                        {
+                            //  ******* DISCONTINUED *************
+                            //validSwitch = true;                            
+                            //objDP.OutputFileName = "SO_7091762_" + DateTime.Now.ToString("yyyyMMdd") + ".csv";   // added hhmm
+                            //objDP.CreatePirelliFile();                           
+                            break;
+                        }
+                    case "PIRELLI_DOWNLOAD":
+                        {                            
+                            //string m_fileNamePart = "Error_SO_7091762_" + DateTime.Now.ToString("yyyyMMdd");
+                            //List<string> sDloadedFiles = FTP_FileDownload(m_fileNamePart, false);
+                            break;
+                        }
                     case "PODIUM":
                         {
                             validSwitch = true;
                             objDP.OutputFileName = "Podium_CustomerNumbers_ " + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
                             objDP.CreatePodiumFile();
                             break;
-                        }
-                    case "MADDENCO":
-                        {
-                            //validSwitch = true;
-                            //objDP.ConnectionString = CONNECTIONSTRING_Metaviewer;
-                            //objDP.OutputFileName = "Meta_" + DateTime.Now.ToString("yyMMddhhmm") + ".txt";
-                            //objDP.CreateMetaMaddenFile();
-                            break;
-                        }
-                    case "MAVIS":
-                        {
-                            validSwitch = true;
-                            objDP.OutputFilePath = @"\\gbsql01v2\c$\Scheduled Tasks\DealerProgramsUploads\Mavis\";
-
-                            objDP.OutputFileName = "MAVIS_" + DateTime.Now.ToString("yyyyMMdd") + "-" + DateTime.Now.ToString("hhmm") + ".csv";
-                            objDP.CreateMavisFile();
-                            break;
-                        }
+                        } 
                 }
 
                 if (validSwitch)
@@ -383,7 +401,7 @@ namespace Dealer_Programs_Uploads
                 }
             }
         }
-
+          
         private static string UpdateJobLog()
         {
             StringBuilder sb = new StringBuilder("EXEC Dealer_Programs.dbo.up_DealerPrograms_JobsActivityLog_Update ");
